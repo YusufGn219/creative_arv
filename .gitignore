@@ -6,7 +6,29 @@ __pycache__/
 venv/
 env/
 .venv/
-myenv/
+myenv/# Python
+__pycache__/
+*.py[cod]
+*.pyc
+
+# Django
+*.log
+db.sqlite3
+media/
+staticfiles/
+
+# Environment
+.env
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
 
 .env    
 
