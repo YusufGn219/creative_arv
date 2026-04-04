@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters',
 
     # Third party
     'rest_framework',
@@ -42,7 +43,7 @@ INSTALLED_APPS = [
     'core',
     'users',
     # 'articles',
-    # 'forums',
+    'forums',
     # 'interactions',
 ]
 
