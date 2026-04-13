@@ -51,6 +51,7 @@ class ForumTag(models.Model):
 class Post(models.Model):
     forum = models.ForeignKey(Forum, on_delete=models.CASCADE, related_name='posts')
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='posts')
+    article = models.ForeignKey('articles.Article', on_delete=models.SET_NULL, null=True, blank=True, related_name='posts')
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
     title = models.CharField(max_length=255, blank=True)
     slug = models.SlugField(max_length=280, unique=True, blank=True)

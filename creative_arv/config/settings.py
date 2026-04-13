@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     # Local
     'core',
     'users',
-    # 'articles',
+    'articles',
     'forums',
     # 'interactions',
 ]
