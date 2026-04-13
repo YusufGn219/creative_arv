@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'users',
     'articles',
     'forums',
-    # 'interactions',
+    'interactions',
 ]
 
 MIDDLEWARE = [
