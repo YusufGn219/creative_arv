@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
+from django.conf import settings
 from users.models import User
 from core.models import Category, Tag
 
@@ -57,3 +58,20 @@ class ArticleTag(models.Model):
 
     def __str__(self):
         return f"{self.article.title} - {self.tag.name}"
+
+
+class ArticleRead(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='reads')
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True, blank=True
+    )
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    read_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-read_at']
+
+    def __str__(self):
+        return f"{self.article.title} - {self.read_at}"

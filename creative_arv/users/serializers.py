@@ -15,11 +15,10 @@ class RegisterSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'bio', 'avatar_url', 'date_joined']
-        read_only_fields = ['id','username','email', 'date_joined']
+        fields = ['id', 'username', 'email', 'bio', 'avatar', 'date_joined']
+        read_only_fields = ['id', 'username', 'email', 'date_joined']
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data['bio'] = instance.bio or ''
-        data['avatar_url'] = instance.avatar_url or ''
         return data
