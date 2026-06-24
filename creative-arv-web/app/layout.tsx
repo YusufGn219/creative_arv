@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono, Playfair_Display } from 'next/font/google'
 import './globals.css'
+import { ThemeProvider } from 'next-themes'
 import { AuthProvider } from '@/context/AuthContext'
-import Navbar from '@/components/layout/Navbar'
-import LeftSidebar from '@/components/layout/LeftSidebar'
+import { LayoutContent } from '@/components/layout/LayoutContent'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -31,17 +31,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="tr" className="dark">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased bg-background text-foreground`}>
-        <AuthProvider>
-          <Navbar />
-          <div className="max-w-7xl mx-auto px-6 pt-24 pb-12 flex gap-8">
-            <LeftSidebar />
-            <main className="flex-1 min-w-0">
+    <html lang="tr" suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased`}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+          <AuthProvider>
+            <LayoutContent>
               {children}
-            </main>
-          </div>
-        </AuthProvider>
+            </LayoutContent>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

@@ -1,39 +1,26 @@
-export default function RightSidebar() {
+export function RightSidebar() {
   return (
-    <aside className="w-64 shrink-0 hidden xl:block">
-      <div className="sticky top-24 flex flex-col gap-4">
-
-        {/* Trend İçerikler — v2'de API'den çekilecek */}
-        <div className="bg-surface rounded-xl p-4 border border-border">
-          <p className="text-xs text-foreground-muted uppercase tracking-wider mb-3">
-            Trend
-          </p>
-          <div className="flex flex-col gap-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="flex flex-col gap-1">
-                <div className="h-3 bg-border rounded w-full animate-pulse" />
-                <div className="h-3 bg-border rounded w-2/3 animate-pulse" />
-              </div>
-            ))}
+    <aside className="w-72 shrink-0 py-4 px-3 border-l border-[var(--border)]">
+      <p className="text-[9px] font-semibold uppercase tracking-widest text-[var(--text3)] mb-3 px-2">Trend</p>
+      <div className="space-y-2">
+        {['Rust ile Sistem Programlama', 'Postmodern Roman Nedir?', 'Kuantum Hesaplama'].map((title, i) => (
+          <div key={i} className="p-3 rounded-lg bg-[var(--surface)] border border-[var(--border)] cursor-pointer hover:border-[var(--accent)] transition-colors">
+            <p className="text-sm text-[var(--text)] font-medium">{title}</p>
+            <p className="text-xs text-[var(--text3)] mt-1">Teknoloji</p>
           </div>
-        </div>
-
-        {/* Aktif Forumlar — v2'de API'den çekilecek */}
-        <div className="bg-surface rounded-xl p-4 border border-border">
-          <p className="text-xs text-foreground-muted uppercase tracking-wider mb-3">
-            Aktif Forumlar
-          </p>
-          <div className="flex flex-col gap-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="flex flex-col gap-1">
-                <div className="h-3 bg-border rounded w-full animate-pulse" />
-                <div className="h-3 bg-border rounded w-1/2 animate-pulse" />
-              </div>
-            ))}
+        ))}
+      </div>
+      <p className="text-[9px] font-semibold uppercase tracking-widest text-[var(--text3)] mt-5 mb-3 px-2">Aktif Forumlar</p>
+      <div className="space-y-2">
+        {['AI ve Etik', 'Web Güvenliği'].map((title, i) => (
+          <div key={i} className="p-3 rounded-lg bg-[var(--surface)] border border-[var(--border)] cursor-pointer hover:border-[var(--accent)] transition-colors">
+            <p className="text-sm text-[var(--text)]">{title}</p>
+            <p className="text-xs text-[var(--text3)] mt-1">12 yeni post</p>
           </div>
-        </div>
-
+        ))}
       </div>
     </aside>
   )
 }
+
+export default RightSidebar

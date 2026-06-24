@@ -1,63 +1,56 @@
 'use client'
-
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { BookOpen, MessageSquare, Tag, Grid } from 'lucide-react'
+import { apiRequest } from '@/lib/api'
 
-const navItems = [
-  { href: '/', label: 'Keşfet', icon: Grid },
-  { href: '/articles', label: 'Makaleler', icon: BookOpen },
-  { href: '/forums', label: 'Forumlar', icon: MessageSquare },
-]
+interface Category { id: number; name: string; slug: string }
+interface Tag { id: number; name: string; slug: string }
 
-export default function LeftSidebar() {
-  const pathname = usePathname()
+export function LeftSidebar() {
+  const [categories, setCategories] = useState<Category[]>([])
+  const [tags, setTags] = useState<Tag[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    Promise.all([
+      apiRequest<{ results?: Category[] } | Category[]>('/api/categories/'),
+      apiRequest<{ results?: Tag[] } | Tag[]>('/api/tags/'),
+    ]).then(([cats, tgs]) => {
+      setCategories((cats as { results?: Category[] }).results ?? (cats as Category[]))
+      setTags((tgs as { results?: Tag[] }).results ?? (tgs as Tag[]))
+    }).catch(() => {}).finally(() => setLoading(false))
+  }, [])
+
+  if (loading) return (
+    <aside className="w-60 shrink-0 py-4 px-3 border-r border-[var(--border)] space-y-1">
+      {[...Array(5)].map((_, i) => (
+        <div key={i} className="h-8 rounded-md bg-[var(--surface)] animate-pulse" />
+      ))}
+    </aside>
+  )
 
   return (
-    <aside className="w-56 shrink-0 hidden lg:block">
-      <div className="sticky top-24 flex flex-col gap-1">
-
-        {/* Ana Navigasyon */}
-        <nav className="flex flex-col gap-1 mb-6">
-          {navItems.map((item) => {
-            const Icon = item.icon
-            const isActive = pathname === item.href
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${
-                  isActive
-                    ? 'bg-surface text-foreground'
-                    : 'text-foreground-muted hover:text-foreground hover:bg-surface'
-                }`}
-              >
-                <Icon size={16} />
-                {item.label}
-              </Link>
-            )
-          })}
-        </nav>
-
-        {/* Kategoriler — v3'te API'den çekilecek */}
-        <div className="mb-6">
-          <p className="text-xs text-foreground-muted uppercase tracking-wider px-3 mb-2">
-            Kategoriler
-          </p>
-          <div className="flex flex-col gap-1">
-            {['Teknoloji', 'Edebiyat', 'Akademi'].map((cat) => (
-              <span
-                key={cat}
-                className="flex items-center gap-2 px-3 py-1.5 text-sm text-foreground-muted rounded-lg cursor-not-allowed opacity-50"
-              >
-                <Tag size={14} />
-                {cat}
-              </span>
-            ))}
-          </div>
-        </div>
-
-      </div>
+    <aside className="w-60 shrink-0 py-4 px-3 border-r border-[var(--border)]">
+      <p className="text-[9px] font-semibold uppercase tracking-widest text-[var(--text3)] mb-2 px-2">Kategoriler</p>
+      {categories.map(cat => (
+        <Link key={cat.id} href={`/?category=${cat.slug}`}
+          className="block px-3 py-2 rounded-md text-sm text-[var(--text2)] hover:bg-[var(--surface)] hover:text-[var(--text)] transition-colors">
+          {cat.name}
+        </Link>
+      ))}
+      {tags.length > 0 && (
+        <>
+          <p className="text-[9px] font-semibold uppercase tracking-widest text-[var(--text3)] mt-4 mb-2 px-2">Etiketler</p>
+          {tags.slice(0, 8).map(tag => (
+            <Link key={tag.id} href={`/?tag=${tag.slug}`}
+              className="block px-3 py-2 rounded-md text-sm text-[var(--text2)] hover:bg-[var(--surface)] hover:text-[var(--text)] transition-colors">
+              #{tag.name}
+            </Link>
+          ))}
+        </>
+      )}
     </aside>
   )
 }
+
+export default LeftSidebar

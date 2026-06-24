@@ -24,3 +24,24 @@ export function clearTokens(): void {
 export function isLoggedIn(): boolean {
   return !!getAccessToken()
 }
+
+export async function refreshAccessToken(): Promise<string | null> {
+  if (typeof window === 'undefined') return null
+  const refresh = localStorage.getItem(REFRESH_KEY)
+  if (!refresh) return null
+
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/token/refresh/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh }),
+    })
+    if (!res.ok) { clearTokens(); return null }
+    const data = await res.json()
+    localStorage.setItem(TOKEN_KEY, data.access)
+    return data.access
+  } catch {
+    clearTokens()
+    return null
+  }
+}
