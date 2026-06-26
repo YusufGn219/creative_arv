@@ -9,11 +9,15 @@ class ArticleViewSet(viewsets.ModelViewSet):
     lookup_field = 'slug'
 
     def get_queryset(self):
-        return Article.objects.filter(
-            is_published=True,
-            is_approved=True,
-            is_banned=False
-        )
+        qs = Article.objects.filter(is_banned=False)
+        params = self.request.query_params
+        if author := params.get('author'):
+            qs = qs.filter(author__username=author)
+        if category := params.get('category__slug'):
+            qs = qs.filter(category__slug=category)
+        if tag := params.get('tags__slug'):
+            qs = qs.filter(article_tags__tag__slug=tag)
+        return qs.distinct()
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
@@ -21,7 +25,7 @@ class ArticleViewSet(viewsets.ModelViewSet):
         return [permissions.IsAuthenticated()]
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        serializer.save(author=self.request.user, is_approved=True)
 
     def retrieve(self, request, *args, **kwargs):
         response = super().retrieve(request, *args, **kwargs)

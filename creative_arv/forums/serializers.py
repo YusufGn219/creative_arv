@@ -18,31 +18,48 @@ class PostReplySerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
     replies = PostReplySerializer(many=True, read_only=True)
-    forum_id = serializers.IntegerField(write_only=True)
+    forum_slug = serializers.SerializerMethodField(read_only=True)
+    forum_id = serializers.IntegerField(write_only=False, required=False)
     parent_id = serializers.IntegerField(write_only=True, required=False, allow_null=True)
+    comments_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = [
-            'id', 'forum_id', 'parent_id', 'author',
+            'id', 'forum', 'forum_id', 'forum_slug', 'parent_id', 'author',
             'title', 'slug', 'body',
             'is_published', 'is_approved', 'is_banned', 'ban_reason',
             'is_edited', 'edited_at',
-            'replies',
+            'replies', 'comments_count',
             'created_at', 'updated_at'
         ]
         read_only_fields = [
-            'id', 'slug', 'author',
+            'id', 'slug', 'author', 'forum',
             'is_approved', 'is_banned', 'ban_reason',
             'is_edited', 'edited_at',
             'created_at', 'updated_at'
         ]
 
+    def get_forum_slug(self, obj):
+        return obj.forum.slug if obj.forum else None
+
+    def get_comments_count(self, obj):
+        from django.contrib.contenttypes.models import ContentType
+        from interactions.models import Comment
+        ct = ContentType.objects.get_for_model(Post)
+        return Comment.objects.filter(content_type=ct, object_id=obj.id, is_deleted=False).count()
+
 
 class ForumSerializer(serializers.ModelSerializer):
     created_by = UserSerializer(read_only=True)
     category = CategorySerializer(read_only=True)
-    tags = TagSerializer(many=True, read_only=True, source='forum_tags')
+    tags = serializers.SerializerMethodField()
+
+    def get_tags(self, obj):
+        return [
+            {'id': ft.tag.id, 'name': ft.tag.name, 'slug': ft.tag.slug}
+            for ft in obj.forum_tags.select_related('tag').all()
+        ]
     category_id = serializers.IntegerField(write_only=True, required=False, allow_null=True)
     tag_ids = serializers.ListField(
         child=serializers.IntegerField(), write_only=True, required=False

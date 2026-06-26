@@ -35,9 +35,8 @@ export function LayoutContent({ children }: { children: React.ReactNode }) {
     return (
       <>
         <Navbar />
-        <div className="flex min-h-screen">
-          <main className="flex-1 bg-[var(--read-bg)]">{children}</main>
-          <RightSidebar />
+        <div className="flex h-[calc(100vh-48px)] overflow-hidden">
+          <main className="flex-1 min-h-0 overflow-y-auto bg-[var(--read-bg)]">{children}</main>
         </div>
       </>
     )
@@ -47,9 +46,9 @@ export function LayoutContent({ children }: { children: React.ReactNode }) {
     return (
       <>
         <Navbar />
-        <div className="flex min-h-screen">
+        <div className="flex h-[calc(100vh-48px)] overflow-hidden">
           <LeftSidebar />
-          <main className="flex-1 bg-[var(--bg)]">{children}</main>
+          <main className="flex-1 min-h-0 overflow-y-auto bg-[var(--bg)]">{children}</main>
           <RightSidebar />
         </div>
       </>
@@ -59,9 +58,9 @@ export function LayoutContent({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Navbar />
-      <div className="flex min-h-screen">
+      <div className="flex h-[calc(100vh-48px)] overflow-hidden">
         <LeftSidebar />
-        <main className="flex-1 bg-[var(--bg)]">{children}</main>
+        <main className="flex-1 min-h-0 overflow-y-auto bg-[var(--bg)]">{children}</main>
       </div>
     </>
   )

@@ -7,7 +7,13 @@ from core.serializers import CategorySerializer, TagSerializer
 class ArticleSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
     category = CategorySerializer(read_only=True)
-    tags = TagSerializer(many=True, read_only=True, source='article_tags')
+    tags = serializers.SerializerMethodField()
+
+    def get_tags(self, obj):
+        return [
+            {'id': at.tag.id, 'name': at.tag.name, 'slug': at.tag.slug}
+            for at in obj.article_tags.select_related('tag').all()
+        ]
     category_id = serializers.IntegerField(write_only=True, required=False, allow_null=True)
     tag_ids = serializers.ListField(
         child=serializers.IntegerField(), write_only=True, required=False

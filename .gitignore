@@ -45,3 +45,5 @@ node_modules/
 creative-arv-web/node_modules/
 creative-arv-web/.next/
 creative-arv-web/.env.local
+
+.claude/

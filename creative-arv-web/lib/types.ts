@@ -2,9 +2,14 @@ export interface User {
   id: number
   username: string
   email: string
+  first_name: string
+  last_name: string
   bio: string | null
+  avatar: string | null
   avatar_url: string | null
   date_joined: string
+  article_count?: number
+  post_count?: number
 }
 
 export interface Category {
@@ -32,6 +37,8 @@ export interface Article {
   is_published: boolean
   is_approved: boolean
   is_banned: boolean
+  reading_time: number
+  comment_count?: number
   created_at: string
   updated_at: string
 }
@@ -44,6 +51,7 @@ export interface Forum {
   title: string
   slug: string
   description: string
+  rules: string
   is_published: boolean
   is_approved: boolean
   is_pinned: boolean
@@ -56,13 +64,17 @@ export interface Forum {
 export interface Post {
   id: number
   forum: number
+  forum_slug?: string
   author: User | null
   title: string
   slug: string
-  body: string
+  body: object | string
+  article_ref?: { title: string; slug: string } | null
   is_published: boolean
   is_approved: boolean
   is_banned: boolean
+  reply_count?: number
+  comments_count?: number
   created_at: string
   updated_at: string
 }
